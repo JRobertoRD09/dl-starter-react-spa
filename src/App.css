@@ -1,0 +1,24 @@
+.App {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.App-logo {
+  height: 6vmin;
+  width: 40vmin;
+}
+
+.App-header {
+  padding: 10px;
+  margin: 5px 10px 5px 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: calc(10px + 2vmin);
+  border-bottom: 1px solid black;
+}
+
+.App-link {
+  color: #61dafb;
+}
