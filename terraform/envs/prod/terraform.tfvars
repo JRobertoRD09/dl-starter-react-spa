@@ -1,0 +1,6 @@
+profile                  = ""
+environment              = "production"
+env_subtype              = ""
+subdomain                = "replaceme"
+infrastructure_cicd_role = "dl-aws-wlprod-prod-ipa-infcicd"
+workload_cicd_role       = "dl-aws-wlprod-prod-ipa-wlcicd"

@@ -1,0 +1,5 @@
+region         = "us-east-2"
+bucket         = "dl-aws-wlprod-tfstate-281462442485"
+key            = "spa-replaceme/terraform.tfstate"
+dynamodb_table = "dl-aws-wlprod-tfstate-281462442485-lock"
+encrypt        = "true"

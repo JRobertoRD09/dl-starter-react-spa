@@ -1,26 +1,23 @@
 locals {
-  account_id           = data.aws_caller_identity.current.account_id
-  partition            = data.aws_partition.current.partition
-  prefix_list_name     = "${module.this.namespace_full}-dbsvpn"
-  nameservers_set_name = "dl-aws-dns"
-  aws_root_domain      = "aws.daughertylabs.io"
-  www_aws_root_domain  = "www.${local.aws_root_domain}"
-  alternative_domains = [
-    local.aws_root_domain,
-    local.www_aws_root_domain,
-  ]
+  account_id = data.aws_caller_identity.current.account_id
+  partition  = data.aws_partition.current.partition
+
+  dns_name = "${var.subdomain}.${data.aws_route53_zone.public.name}"
+  aliases  = [local.dns_name]
+  waf_name = "${module.this.name_prefix}-waf"
+
   deployment_roles = [
-    "arn:${local.partition}:iam::${local.account_id}:role/AWSAFTExecution",
-    "arn:${local.partition}:iam::${local.account_id}:role/AWSControlTowerExecution"
+    "arn:${local.partition}:iam::${local.account_id}:role/${var.infrastructure_cicd_role}",
+    "arn:${local.partition}:iam::${local.account_id}:role/${var.workload_cicd_role}"
   ]
   deployment_principal_arns = { for r in local.deployment_roles : r => [""] }
   artifact_tags = {
-    dbs-confidentiality = lookup(module.baseaws.tags, "dbs-confidentiality", "confidential")
-    dbs-codeowners      = lookup(module.baseaws.tags, "dbs-codeowners", "N/A")
-    dbs-dataowners      = lookup(module.baseaws.tags, "dbs-dataowners", "N/A")
-    dbs-deletiondate    = lookup(module.baseaws.tags, "dbs-deletiondate", "N/A")
-    dbs-dataregulations = lookup(module.baseaws.tags, "dbs-dataregulations", "N/A")
-    dbs-privacyreview   = lookup(module.baseaws.tags, "dbs-privacyreview", "N/A")
-    dbs-securityreview  = lookup(module.baseaws.tags, "dbs-securityreview", "N/A")
+    dbs-confidentiality = lookup(module.this.tags, "dbs-confidentiality", "confidential")
+    dbs-codeowners      = lookup(module.this.tags, "dbs-codeowners", "N/A")
+    dbs-dataowners      = lookup(module.this.tags, "dbs-dataowners", "N/A")
+    dbs-deletiondate    = lookup(module.this.tags, "dbs-deletiondate", "N/A")
+    dbs-dataregulations = lookup(module.this.tags, "dbs-dataregulations", "N/A")
+    dbs-privacyreview   = lookup(module.this.tags, "dbs-privacyreview", "N/A")
+    dbs-securityreview  = lookup(module.this.tags, "dbs-securityreview", "N/A")
   }
 }
