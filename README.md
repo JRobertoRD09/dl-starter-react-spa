@@ -2,6 +2,49 @@
 
 Created as a template for other teams and users to create their own SPA piece that connects with Daugherty Labs utilities. 
 
+## Deployment configuration
+
+This project contains template for frontend deployment. It's based on `terraform` which deploys to `AWS`.
+
+### Generated artifacts
+
+Most important artifacts generated out of deployment are:
+
+- `s3` bucket - Storage used to store static files from `build` folder
+- `CloudFront` - Server exposing the static files
+- `Route 53` - Exposes the server to Daugherty Labs domain
+
+### Terraform configuration
+
+The configuration consist of the following files:
+
+- `envs/` - Contains package for each environment. Every package consist of:
+    - `backend.tfvars` - Variables used to initialize `terraform` for storing state data in `s3` bucket
+    - `terraform.tfvars` - Default input variables to `terraform` configuration
+- `acm.tf` - Certification for the DNS
+- `backend.tf` - `terraform` initialization instructions
+- `cdn.tf` - Amazon CloudFront serving the static files
+- `context.tf` - Shared tags added to each created resource
+- `dependencies.tf` - Definition of data retrieved from already existing AWS configuration and reused in `terraform` configuration files
+- `locals.tf` - Definition of local variables reused through the `terraform` configuration
+- `outputs.tf` - Definition of outputs available after executing `terraform`
+- `s3.tf` - Exporting `build` folder containing static frontend files to `s3` bucket served by CloudFront
+- `variables.tf` - Definition of input variables
+- `waf.tf` - Firewall for the CloudFront
+
+### Usage instruction
+
+Before use modify `terraform.tfvars` and `context.tf` to include details about your project.
+
+To start the deployment process, the following commands needs to be executed:
+- `terraform init -backend-config="envs/dev/backend.tfvars"`
+- `terraform plan -var-file="envs/dev/terraform.tfvars" -out=.tfplan`
+- `terraform apply ".tfplan"`
+- `CLOUDFRONT_ID="$(terraform output -raw cf_id)"`
+- `aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_ID} --paths "/*"`
+
+Make sure to include last command, as it forces `CloudFront` to remove old static webpage from cache and load the new one.
+
 ## ESLINT configuration
 
 √ How would you like to use ESLint? · style       

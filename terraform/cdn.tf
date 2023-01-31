@@ -7,9 +7,10 @@ module "cloudfront_s3_cdn" {
   stage     = ""
   name      = module.this.name_prefix
 
-  aliases           = local.aliases
-  dns_alias_enabled = true
-  parent_zone_id    = data.aws_route53_zone.public.zone_id
+  aliases             = local.alternative_domains
+  dns_alias_enabled   = true
+  parent_zone_id      = data.aws_route53_zone.public.zone_id
+  acm_certificate_arn = aws_acm_certificate.base.arn
 
   cors_allowed_headers = ["*"]
   cors_allowed_methods = ["GET", "HEAD"]
@@ -22,7 +23,7 @@ module "cloudfront_s3_cdn" {
   error_document       = ""
 
   price_class = "PriceClass_100"
-  web_acl_id  = aws_wafv2_web_acl.ingress.id
+  web_acl_id  = aws_wafv2_web_acl.ingress.arn
 
   deployment_principal_arns          = local.deployment_principal_arns
   block_origin_public_access_enabled = true

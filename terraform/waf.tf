@@ -1,7 +1,8 @@
 resource "aws_wafv2_web_acl" "ingress" {
+  provider    = aws.use1
   name        = local.waf_name
   description = "Protection of ${module.this.name_prefix} CloudFront."
-  scope       = "REGIONAL"
+  scope       = "CLOUDFRONT"
   default_action {
     allow {}
   }
