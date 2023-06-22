@@ -34,16 +34,75 @@ The configuration consist of the following files:
 
 ### Usage instruction
 
-Before use modify `terraform.tfvars` and `context.tf` to include details about your project.
+First, go through this documentation to educate yourself about Terraform and complete setup to be able to use it.
 
-To start the deployment process, the following commands needs to be executed:
+`https://daugherty.atlassian.net/wiki/spaces/PERI/pages/3391062269/Technical+Onboarding`
+
+Modify `terraform.tfvars`, `backend.tfvars` and `context.tf` to include details about your project, using the appropriate Daugherty Labs naming conventions (see below).
+
+For any variables that you add to `variables.tf` that have defaults that will change per project, add the defaults to the `terraform.tfvars` file in the appropriate environment. 
+
+To start the deployment process, the following commands need to be executed:
+
 - `terraform init -backend-config="envs/dev/backend.tfvars"`
-- `terraform plan -var-file="envs/dev/terraform.tfvars" -out=.tfplan`
-- `terraform apply ".tfplan"`
-- `CLOUDFRONT_ID="$(terraform output -raw cf_id)"`
-- `aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_ID} --paths "/*"`
+- `terraform plan -var-file="envs/dev/terraform.tfvars"`
+- `terraform apply -var-file="envs/dev/terraform.tfvars"`
 
-Make sure to include last command, as it forces `CloudFront` to remove old static webpage from cache and load the new one.
+When you run plan, please check that the plan will create the expected resources. Also ensure that the resources in your terraform plan follow Daugherty Labs naming conventions.
+
+When you execute `apply`, terraform will inform you that everything was provisioned successfully.
+
+If you need to destroy what you've deployed for any reason, execute this command:
+
+- `terraform destroy -var-file="./envs/dev/dev.tfvars"`
+
+- Next, confirm that an appropriately configured S3 Bucket and Cloudfront distribution was created in the AWS console. This should be in `us-east-1`
+- Click on the Custom SSL certificate link in console for Cloudfront - this will take you to information about that certificate, which contains the domain name configured using Terraform.
+- Save the domain name.
+- Execute `npm run build` in you React frontend.
+- Add build files and other directories generated in the build folder in the S3 bucket you created. Do not just upload the build folder.
+- Confirm that the domain you provisioned appears as you expect, and not a blank page.
+
+## Daugherty Labs naming conventions for Terraform
+
+This document describes the naming structure for resources created in DBS cloud environments. This hierarchy should be provider agnostic, applied as closely as possible to each cloud environment (AWS, Azure, Google, etc).
+
+- `Management Container Names` - Groupings for applying common policies across a set of resources. Resource types in this category are: 
+`AWS` - Organization Units, Accounts 
+`Azure` - Tenant, Management Groups, Subscriptions, Resource Groups 
+`GCP` - Cloud Account Organization, Folders, Projects 
+Format: `{org}-{cp}-{parent-name}-{name}` - 
+
+- `IAM Names`
+Roles, groups and policies in Identity and Access Management services. 
+Format: `{org}-{cp}-{AD_GROUP}-{name}`
+
+- `All other resource names:`
+Different types of resources can share the same name if they are logically related. Multiple instances of the same type can be differentiated with an optional attributes part. 
+Format: `{org}-{cp}-{namespace}-{stage}-{name}-{attributes}?` 
+
+- `Name Parts`
+
+`org` – Defines the organization responsible for the resource. Valid entries include: 
+`dbs` - Daugherty Business Solutions (CORP) 
+`dl` - Daugherty Labs (Consulting) 
+`cp` – Define the cloud provider hosting the resource. Valid entries include: 
+`dc` - Data Center 
+`aws` - Amazon Web Services 
+`az` - Microsoft Azure 
+`gcp` - Google Cloud Platform 
+`oci` - Oracle Cloud Infrastructure 
+`ibm` - IBM Cloud 
+`do` - Digital Ocean 
+`vul` - Vultr 
+`ali` - Alibaba Cloud 
+`cv` - Civo 
+`parent-name` - name (less org-cp) of one level up 
+`AD_GROUP` - associated Active Directory group 
+`namespace` - one level up, group name plus optional additional differentiation 
+`stage` – Defines the deployment environment of the resource 
+`name` – The unique name of the resource within that particular hierarchy level and resource type 
+`attributes` – Elements to distinguish individual instances of the same type and purpose with an instance number or special purpose name
 
 ## ESLINT configuration
 
