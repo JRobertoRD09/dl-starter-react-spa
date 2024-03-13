@@ -11,3 +11,4 @@ data "aws_ssm_parameter" "public_zone" {
 data "aws_route53_zone" "public" {
   zone_id = data.aws_ssm_parameter.public_zone.value
 }
+

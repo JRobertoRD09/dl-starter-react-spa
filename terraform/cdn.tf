@@ -3,11 +3,11 @@ module "cloudfront_s3_cdn" {
   version = "0.84.0"
 
   enabled   = true
-  namespace = ""
-  stage     = ""
+  namespace = var.namespace
+  stage     = var.environment
   name      = module.this.name_prefix
 
-  aliases             = local.alternative_domains
+  aliases             = local.aliases
   dns_alias_enabled   = true
   parent_zone_id      = data.aws_route53_zone.public.zone_id
   acm_certificate_arn = aws_acm_certificate.base.arn

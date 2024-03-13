@@ -29,3 +29,9 @@ variable "workload_cicd_role" {
   description = "Role used by workload CI/CD pipelines."
   type        = string
 }
+
+variable "namespace" {
+  description = "One level up group name plus optional additional differentiation."
+  type        = string
+  default     = "ipa"
+}

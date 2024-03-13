@@ -1,6 +1,6 @@
 profile                  = ""
 environment              = "development"
 env_subtype              = ""
-subdomain                = "replaceme"
+subdomain                = "testspa"
 infrastructure_cicd_role = "dl-aws-wlnp-dev-ipa-infcicd"
 workload_cicd_role       = "dl-aws-wlnp-dev-ipa-wlcicd"

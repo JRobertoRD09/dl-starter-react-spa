@@ -7,8 +7,8 @@ locals {
   waf_name = "${module.this.name_prefix}-waf"
 
   deployment_roles = [
-    "arn:${local.partition}:iam::${local.account_id}:role/${var.infrastructure_cicd_role}",
-    "arn:${local.partition}:iam::${local.account_id}:role/${var.workload_cicd_role}"
+    "arn:aws:iam::801898201347:role/dl-aws-wlnp-dev-ipa-infcicd",
+    "arn:aws:iam::801898201347:role/dl-aws-wlnp-dev-ipa-wlcicd"
   ]
   deployment_principal_arns = { for r in local.deployment_roles : r => [""] }
   artifact_tags = {

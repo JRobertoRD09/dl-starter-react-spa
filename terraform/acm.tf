@@ -1,7 +1,7 @@
 resource "aws_acm_certificate" "base" {
   domain_name               = data.aws_route53_zone.public.name
   validation_method         = "DNS"
-  subject_alternative_names = local.alternative_domains
+  subject_alternative_names = local.aliases
 
   tags = merge(module.this.tags, {
     Name = data.aws_route53_zone.public.name
